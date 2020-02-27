@@ -110,6 +110,10 @@ public class ProgressDialog {
 		preciseProgress += deltaProgress;
 		updateProgress();
 	}
+	
+	public double getProgress() {
+		return preciseProgress;
+	}
 
 	private void updateProgress() {
 		SwingUtilities.invokeLater(() -> progressBar.setValue((int) (preciseProgress * 100)));

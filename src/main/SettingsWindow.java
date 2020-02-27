@@ -76,8 +76,8 @@ public class SettingsWindow extends JDialog {
 		regionCheckBoxes = new JCheckBox[regionNames.size()];
 		int counter = 0;
 		int maxCheckBoxWidth = 0;
-		String[] sortedRegionNames = new String[regionNames.size()];
-		Arrays.sort(regionNames.toArray(sortedRegionNames));
+		String[] sortedRegionNames = regionNames.toArray(new String[0]);
+		Arrays.sort(sortedRegionNames);
 		for (String curRegionName : sortedRegionNames) {
 			JCheckBox curCheckBox = new JCheckBox(curRegionName);
 			curCheckBox.addActionListener((ActionEvent) -> stagedSettings.put(curRegionName, curCheckBox.isSelected()));

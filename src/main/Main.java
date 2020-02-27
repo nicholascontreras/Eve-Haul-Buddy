@@ -107,15 +107,14 @@ public class Main {
 		Thread thread = new Thread(() -> {
 			loadItems(progressDialog);
 			loadRegionNames(progressDialog);
+			Util.sleep(250);
+			progressDialog.remove();
 		}, "Startup-Load-Thread");
 		thread.start();
 
-		new Timer().schedule(new TimerTask() {
+		new Timer(true).schedule(new TimerTask() {
 			@Override
 			public void run() {
-				if (!thread.isAlive()) {
-					progressDialog.remove();
-				}
 				if (progressDialog.isCancelled()) {
 					System.exit(0);
 				}
@@ -256,6 +255,7 @@ public class Main {
 		System.out.println("Starting item loading");
 		progressDialog.setIndeterminateMode(true);
 		int numPages = Util.getNumPagesForAPIRequest("universe/types");
+		double progressToUse = ((double) numPages) / (numPages + 1);
 		progressDialog.setIndeterminateMode(false);
 		
 		Util.makeAllPagesAPIRequest("universe/types", (String itemDataArray) -> {
@@ -270,7 +270,7 @@ public class Main {
 						items.put(curItem.getItemID(), curItem);
 					}
 				}
-				progressDialog.changeProgress((0.9 / numPages) / itemDataJSONArray.length());
+				progressDialog.changeProgress((progressToUse / numPages) / itemDataJSONArray.length());
 				return true;
 			});
 			return true;
@@ -280,6 +280,7 @@ public class Main {
 
 	private void loadRegionNames(ProgressDialog progressDialog) {
 		System.out.println("Starting region name loading");
+		double progressRemaining = 1 - progressDialog.getProgress();
 		JSONArray allRegions = new JSONArray(Util.makeAPIRequest("universe/regions"));
 		Util.makeBulkAPIRequests("universe/regions/!bulk!", allRegions, (String regionInfoString) -> {
 			JSONObject regionInfo = new JSONObject(regionInfoString);
@@ -289,7 +290,7 @@ public class Main {
 			if (regionID < 11000000) {
 				regionNames.put(regionName, regionID);
 			}
-			progressDialog.changeProgress(0.1 / allRegions.length());
+			progressDialog.changeProgress(progressRemaining / allRegions.length());
 			return true;
 		});
 		System.out.println("Finished region name loading");
