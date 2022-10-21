@@ -1,14 +1,10 @@
 package autoTrader;
 
-import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.MouseInfo;
 import java.awt.Dialog.ModalityType;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
+import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.Robot;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;

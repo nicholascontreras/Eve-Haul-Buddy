@@ -2,15 +2,8 @@ package autoTrader;
 
 import java.awt.AWTException;
 import java.awt.Color;
-import java.awt.HeadlessException;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -19,7 +12,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import engine.HaulJob;
 import util.Util;
 
 /**

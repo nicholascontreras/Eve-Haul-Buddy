@@ -1,18 +1,11 @@
 package util;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-
-import javax.swing.JProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,7 +32,7 @@ public class Util {
 					if (curIndex >= substutions.length()) {
 						break;
 					}
-					
+
 					String curSub = substutions.get(curIndex).toString();
 					String curData = makeAPIRequest(request.replace("!bulk!", curSub));
 					boolean doAgain = callback.callback(curData);
@@ -66,25 +59,34 @@ public class Util {
 	}
 
 	public static int getNumPagesForAPIRequest(String request) {
-		int cur = 2;
+		int low = 2;
+		int high = 2;
 
 		while (true) {
-			String curData = makeAPIRequest(request + (request.contains("?") ? "&" : "?") + "page=" + cur);
-			
-			if (curData.equals("[]")) {
+			String curData = makeAPIRequest(request + (request.contains("?") ? "&" : "?") + "page=" + high);
+
+			if (curData == null) {
 				while (true) {
-					cur--;
-					curData = makeAPIRequest(request + (request.contains("?") ? "&" : "?") + "page=" + cur);
-					if (!curData.equals("[]")) {
+					int cur = (low + high) / 2;
+
+					if (cur == low) {
 						return cur;
+					} else {
+						curData = makeAPIRequest(request + (request.contains("?") ? "&" : "?") + "page=" + cur);
+						if (curData == null) {
+							high = cur;
+						} else {
+							low = cur;
+						}
 					}
 				}
 			} else {
-				cur *= 2;
+				low = high;
+				high *= 2;
 			}
 		}
 	}
-	
+
 	public static void makeAllPagesAPIRequest(String request, APICallback callback) {
 
 		Thread[] threads = new Thread[NUM_THREADS];
@@ -96,7 +98,7 @@ public class Util {
 
 				while (true) {
 					String curData = makeAPIRequest(request + (request.contains("?") ? "&" : "?") + "page=" + curPage);
-					if (curData.equals("[]")) {
+					if (curData == null) {
 						break;
 					}
 					boolean doAgain = callback.callback(curData);
@@ -128,18 +130,23 @@ public class Util {
 			try {
 				URL url = new URL(BASE_REQUEST_URL + request);
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				InputStreamReader isr = new InputStreamReader(conn.getInputStream());
-				StringBuilder response = new StringBuilder();
-				int curRead = isr.read();
 
-				while (curRead != -1) {
-					response.append((char) curRead);
-					curRead = isr.read();
+				if (conn.getResponseCode() == 200) {
+					InputStreamReader isr = new InputStreamReader(conn.getInputStream());
+					StringBuilder response = new StringBuilder();
+					int curRead = isr.read();
+
+					while (curRead != -1) {
+						response.append((char) curRead);
+						curRead = isr.read();
+					}
+
+					return response.toString();
+				} else {
+					continue;
 				}
-
-				return response.toString();
 			} catch (IOException e) {
-				System.err.println("Error making API call, attempt: " + (retryTimes + 1));
+				System.err.println("Error making API call (" + e.getMessage() + "), attempt: " + (retryTimes + 1));
 				sleep(1000);
 			}
 		}
@@ -166,7 +173,7 @@ public class Util {
 
 		return copy;
 	}
-	
+
 	public static void sleep(int millis) {
 		try {
 			Thread.sleep(millis);

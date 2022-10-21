@@ -10,12 +10,12 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
 
 import javax.swing.AbstractButton;
 import javax.swing.DefaultButtonModel;
 import javax.swing.JLabel;
 
+@SuppressWarnings("serial")
 public class JSwitchBox extends AbstractButton {
 	private Color colorBright = new Color(220, 220, 220);
 	private Color colorDark = new Color(150, 150, 150);
@@ -30,7 +30,6 @@ public class JSwitchBox extends AbstractButton {
 	private final String trueLabel;
 	private final String falseLabel;
 	private Dimension thumbBounds;
-	private Rectangle2D bounds;
 	private int max;
 
 	public JSwitchBox(String trueLabel, String falseLabel) {

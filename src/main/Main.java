@@ -1,20 +1,11 @@
 package main;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dialog.ModalityType;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Timer;
@@ -25,35 +16,22 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import autoTrader.AutoTrader;
 import autoTrader.Locations;
 import engine.HaulJob;
 import engine.Item;
 import engine.Order;
 import engine.RouteManager;
 import engine.Station;
-import javafx.scene.control.ProgressBar;
 import util.JSwitchBox;
 import util.ProgressDialog;
 import util.Util;
@@ -107,7 +85,8 @@ public class Main {
 		Thread thread = new Thread(() -> {
 			loadItems(progressDialog);
 			loadRegionNames(progressDialog);
-			Util.sleep(250);
+			progressDialog.setProgress(1);
+			Util.sleep(1000);
 			progressDialog.remove();
 		}, "Startup-Load-Thread");
 		thread.start();
@@ -255,9 +234,10 @@ public class Main {
 		System.out.println("Starting item loading");
 		progressDialog.setIndeterminateMode(true);
 		int numPages = Util.getNumPagesForAPIRequest("universe/types");
+		System.out.println(numPages);
 		double progressToUse = ((double) numPages) / (numPages + 1);
 		progressDialog.setIndeterminateMode(false);
-		
+
 		Util.makeAllPagesAPIRequest("universe/types", (String itemDataArray) -> {
 			JSONArray itemDataJSONArray = new JSONArray(itemDataArray);
 			Util.makeBulkAPIRequests("universe/types/!bulk!", itemDataJSONArray, (String itemInfoString) -> {
@@ -288,7 +268,9 @@ public class Main {
 			String regionName = regionInfo.getString("name");
 
 			if (regionID < 11000000) {
-				regionNames.put(regionName, regionID);
+				synchronized (regionNames) {
+					regionNames.put(regionName, regionID);
+				}
 			}
 			progressDialog.changeProgress(progressRemaining / allRegions.length());
 			return true;
@@ -348,7 +330,7 @@ public class Main {
 				sortedHaulJobs.sort((HaulJob hj1, HaulJob hj2) -> {
 					return (int) (hj1.getProfitPerJump() - hj2.getProfitPerJump());
 				});
-//				AutoTrader.run(sortedHaulJobs.get(0));
+				// AutoTrader.run(sortedHaulJobs.get(0));
 			}
 
 			long endTime = System.currentTimeMillis();

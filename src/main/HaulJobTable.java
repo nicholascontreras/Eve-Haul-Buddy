@@ -4,15 +4,11 @@ import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.swing.JTable;
@@ -61,6 +57,7 @@ public class HaulJobTable extends JTable {
 				if (evt.getButton() == MouseEvent.BUTTON3) {
 					int row = me.rowAtPoint(evt.getPoint());
 					int col = me.columnAtPoint(evt.getPoint());
+					System.out.println(row + ", " + col);
 					if (row >= 0 && col >= 0 && row <= hjtm.getRowCount() && col <= hjtm.getColumnCount()) {
 						String toCopy = hjtm.getValueAt(row, col).toString();
 						StringSelection stringSelection = new StringSelection(toCopy);

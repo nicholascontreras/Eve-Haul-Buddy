@@ -1,16 +1,12 @@
 package main;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -27,8 +23,6 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ChangeEvent;
-
 import org.json.JSONObject;
 
 import util.Util;
@@ -96,7 +90,7 @@ public class SettingsWindow extends JDialog {
 				Toolkit.getDefaultToolkit().getScreenSize().height / 3));
 		outerRegionSelectPanel.add(regionScrollPane, BorderLayout.CENTER);
 		settingsPanel.add(outerRegionSelectPanel);
-		
+
 		settingsPanel.add(Box.createHorizontalStrut(5));
 
 		JPanel outerAdditonalOptionsPanel = new JPanel();
@@ -106,7 +100,7 @@ public class SettingsWindow extends JDialog {
 		outerAdditonalOptionsPanel.add(additionalSettingsLabel);
 
 		JPanel additionalOptionsPanel = new JPanel(new GridLayout(0, 2, 5, 5));
-		
+
 		additionalOptionsPanel.add(new JLabel("Cargo Capacity"));
 		cargoCapacitySpinner = new JSpinner(new SpinnerNumberModel(5000, 1, Integer.MAX_VALUE, 1));
 		cargoCapacitySpinner.addChangeListener((ChangeEvent) -> {
@@ -115,7 +109,7 @@ public class SettingsWindow extends JDialog {
 		});
 		cargoCapacitySpinner.getChangeListeners()[0].stateChanged(null);
 		additionalOptionsPanel.add(cargoCapacitySpinner);
-		
+
 		additionalOptionsPanel.add(new JLabel("Maximum Investment"));
 		maximumInvestmentSpinner = new JSpinner(new SpinnerNumberModel(5000000, 1, Integer.MAX_VALUE, 1));
 		maximumInvestmentSpinner.addChangeListener((ChangeEvent) -> {
@@ -124,10 +118,10 @@ public class SettingsWindow extends JDialog {
 		});
 		maximumInvestmentSpinner.getChangeListeners()[0].stateChanged(null);
 		additionalOptionsPanel.add(maximumInvestmentSpinner);
-		
+
 		additionalOptionsPanel.add(new JLabel("Minimum Security Level"));
 		minSecuritySpinner = new JSpinner(new SpinnerNumberModel(0.5, -1, 1, 0.1));
-		minSecuritySpinner.setEditor(new JSpinner.NumberEditor(minSecuritySpinner,"0.0"));
+		minSecuritySpinner.setEditor(new JSpinner.NumberEditor(minSecuritySpinner, "0.0"));
 		minSecuritySpinner.addChangeListener((ChangeEvent) -> {
 			double value = (double) minSecuritySpinner.getValue();
 			stagedSettings.put("min_security", value);
